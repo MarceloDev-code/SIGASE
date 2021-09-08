@@ -1,0 +1,19 @@
+{% extends 'directorio/base.html' %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+{% block contenido %}
+
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">Nueva Sala</h4>
+            <p class="card-subtitle text-muted">Configure su nueva Sala...</p>
+        </div>
+        <div class="card-body">
+            <div class="container">
+                {% crispy form %}
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

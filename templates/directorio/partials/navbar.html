@@ -1,0 +1,57 @@
+<!-- Fixed navbar -->
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a class="navbar-brand" href="{% url 'reserva:inicio' %}"> <i class="fa fa-home"></i> ReservaApp <span class="sr-only">(current)</span></a></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+
+            <li class="nav-item {% if request.resolver_match.view_name == 'reserva:personas' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'reserva:personas' %}">
+                    <i class="fa fa-users"></i>  Profes</a>
+            </li>
+            <li class="nav-item {% if request.resolver_match.view_name == 'reserva:crear_asignatura' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'reserva:crear_asignatura' %}">
+                    <i class="fa fa-building-o"></i>  asignaturas</a>
+            </li>
+            <li class="nav-item {% if request.resolver_match.view_name == 'reserva:crear_modulos' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'reserva:crear_modulo' %}">
+                    <i class="fa fa-home"></i> modulos</a>
+            </li>
+
+        <li class="nav-item {% if request.resolver_match.view_name == 'reserva:crear_sala' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'reserva:crear_sala' %}">
+                    <i class="fa fa-reddit-square"></i> Salas</a>
+            </li>
+
+        <li class="nav-item {% if request.resolver_match.view_name == 'reserva:crear_reserva' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'reserva:crear_reserva' %}">
+                    <i class="fa fa-reddit-alien"></i> reservar</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav pull-right mr-lg-5">
+            {% if request.user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle"
+                       data-toggle="dropdown" href="#" role="button"
+                       aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-user"></i> {{ request.user }}
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="/admin/">
+                            <i class="fa fa-gear"></i>
+                            Administración
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'logout' %}">
+                            <i class="fa fa-sign-out"></i>
+                            Cerrar Sesión
+                        </a>
+                    </div>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>

@@ -1,0 +1,60 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+
+    <meta name="author" content="">
+    <link rel="icon" href="../../../../favicon.ico">
+
+    <title> {% block titulo_pagina %} Reservas{% endblock %} </title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'directorio/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'directorio/css/font-awesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'directorio/css/alertify.min.css' %}" rel="stylesheet">
+    <link href="{% static 'directorio/css/themes/bootstrap.rtl.min.css' %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static '/directorio/css/base.css' %}" rel="stylesheet">
+</head>
+
+<body>
+
+{% include 'directorio/partials/navbar.html' %}
+
+<!-- Begin page content -->
+<div class="container">
+    {% block contenido %}
+    {% endblock %}
+    <br>
+</div>
+
+{% include 'directorio/partials/footer.html' %}
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{% static 'directorio/js/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'directorio/js/popper.min.js' %}"></script>
+<script src="{% static 'directorio/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'directorio/js/alertify.min.js' %}"></script>
+
+{% block extra_js %}
+{% endblock %}
+
+<script>
+    $( document ).ready(function() {
+        {% if messages %}
+            {% for m in messages %}
+                alertify.notify(
+                    '{{ m.message|safe }}', '{{ m.tags }}', 7
+                );
+            {% endfor %}
+        {% endif %}
+    });
+</script>
+</body>
+</html>

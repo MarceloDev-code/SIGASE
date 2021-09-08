@@ -1,0 +1,32 @@
+{% extends 'directorio/base.html' %}
+
+{% block contenido %}
+
+    <div class="card">
+        <div class="card-header">
+            <h3>Eliminar a <small>{{ modulo }} </small></h3>
+        </div>
+        <div class="card-body">
+            <form action="." method="post">
+                {% csrf_token %}
+                <div class="alert alert-warning" role="alert">
+                    <strong> <i class="fa fa-warning" aria-hidden="true"></i></strong>
+                    Está seguro que quiere eliminar a <strong> {{ modulo }} </strong>
+                </div>
+            <div class="text-center">
+                <div class="btn-group">
+                    <a href="{% url 'reserva:modulos' %}" class='btn btn-success btn-lg'>
+                        <i class="fa fa-arrow-left" ></i>
+                        Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-danger btn-lg">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                        Eliminar
+                    </button>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

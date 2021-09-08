@@ -1,0 +1,55 @@
+{% extends 'directorio/base.html' %}
+{% load humanize %}
+
+{% block contenido %}
+    <div class="card border-secondary">
+        <div class="card-header">
+            <div class="pull-right">
+                <a href="{% url 'reserva:editar_persona' persona.id %}" class="btn btn-success">
+                    <i class="fa fa-edit" aria-hidden="true"></i> Editar
+                </a>
+            </div>
+            <h4>Persona  <small>{{ persona.nombre_completo }}</small></h4>
+            <p class="card-subtitle text-muted"> {{ persona.rut }}</p>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Dato</th>
+                    <th>Atributo</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td> <strong> Rut </strong> </td>
+                    <td> {{ persona.rut }} </td>
+                </tr>
+                <tr>
+                    <td> <strong> Nombre </strong> </td>
+                    <td> {{ persona.nombres  }} </td>
+                </tr>
+                <tr>
+                    <td> <strong> Apellidos </strong> </td>
+                    <td> {{ persona.apellidos  }} </td>
+                </tr>
+                <tr>
+                    <td> <strong> Fecha agregado </strong> </td>
+                    <td> {{ persona.creado_en  }} </td>
+                </tr>
+                <tr>
+                    <td> <strong> Fecha modificado</strong> </td>
+                    <td> {{ persona.modificado_en|naturaltime  }} </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+    <br>
+    <div class='text-center'>
+                <a href='{% url 'reserva:personas'  %}' class='btn-lg btn-success '>
+                <i class='fa fa-arrow-left'></i> Volver</a>
+                </div>
+ <br>
+{% endblock %}
