@@ -4,17 +4,17 @@
 
     <div class="card border-secondary ">
         <div class="card-header" >
-            <a href="{% url 'reserva:crear_persona' %}" class="btn btn-success pull-right">
+            <a href="{% url 'crear_estudiante' %}" class="btn btn-success pull-right">
                 <i class="fa fa-plus" aria-hidden="true"></i> Nuevo
             </a>
             <h3 class="card-title">
-                <i  class="fa fa-users"></i> Profesores <span class="badge badge-secondary">
-                {{ personas.paginator.count }}
+                <i  class="fa fa-users"></i> estudiantes <span class="badge badge-secondary">
+                {{ estudiantes.paginator.count }}
             </span>
             </h3>
-            <p class="text-muted card-subtitle"> Listado de Profes...</p>
+            <p class="text-muted card-subtitle"> Listado de estudiantes</p>
             <div class="">
-                <form action="." method="get">
+                <form action="" method="get">
                     <div class="input-group ">
                         <input type="text" class="form-control col-md-4"
                                id="inputPassword2" name="filtro" placeholder="buscar" value="{{ request.GET.filtro }}">
@@ -31,7 +31,7 @@
 
                 </form>
                 <div class="text-center">
-                    <a href='{% url 'reserva:inicio'  %}' class=' btn btn-success '>
+                    <a href='{% url 'inicio'  %}' class=' btn btn-success '>
                         <i class='fa fa-arrow-left'></i> Volver</a>
                 </div>
             </div>
@@ -41,36 +41,36 @@
             <table class="table table-responsive">
                 <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Asignatura</th>
+                    <th>Rut</th>
+                    <th>Apellido Paterno</th>
+                    <th>Apellido Materno</th>
                     <th>Nombres</th>
-                    <th>Apellidos</th>
                     <th>Acciones</th>
+
                 </tr>
                 </thead>
                 <tbody>
-                {% for persona in personas %}
+                {% for estudiante in estudiantes %}
                     <tr>
-                        <td>
-                            <img src="{{ profesor.url_foto }}"
-                                 alt="{{ profesor.rut }}" class="img-responsive rounded"
-                                 width="60px">
-                        </td>
-                        <td> {{ persona.asignatura }}</td>
-                        <td>{{ persona.nombres }}</td>
-                        <td>{{ persona.apellidos}}</td>
+
+                        <td> {{ estudiante.rut }}</td>
+                        <td> {{ estudiante.apellidoPaterno }}</td>
+                        <td> {{ estudiante.apellidoMaterno }}</td>
+                        <td> {{ estudiante.nombres }}</td>
+
+
                         <td>
                             <div class="btn-group">
-                                <a   href="{% url 'reserva:mostrar_persona' persona.id %}"
-                                     class="btn btn-dark btn-sm" >
+                                <a   href="{% url 'mostrar_estudiante' estudiante.rut %}"
+                                     class="btn btn-ligth  btn-sm" >
                                     <i class="fa fa-eye " ></i> Mostrar
                                 </a>
-                                <a  href="{% url 'reserva:editar_persona' persona.id %}"
-                                    class="btn btn-success btn-sm">
+                                <a  href="{% url 'editar_estudiante' estudiante.rut %}"
+                                    class="btn btn-light btn-sm">
                                     <i class="fa fa-edit " ></i> Editar
                                 </a>
-                                <a  href="{% url 'reserva:eliminar_persona' persona.id %}"
-                                    class="btn btn-danger btn-sm">
+                                <a   href="{% url 'eliminar_estudiante' estudiante.rut %}"
+                                      class="btn btn-danger btn-sm">
                                     <i class="fa fa-edit " ></i> Borrar
                                 </a>
                             </div>

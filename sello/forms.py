@@ -5,14 +5,15 @@ from localflavor.cl.forms import CLRutField
 from sello import models
 
 class carreraForm(forms.ModelForm):
-    rut = CLRutField()
+
 
     class Meta:
         model = models.Carrera
         fields = '__all__'
 
+
         def __init_(self,*args,**kwargs ):
-         super(carreraForm, self).__init__(*args,**kwargs)
+         super(carreraForm, self).__init__(*args, **kwargs)
          self.helper = FormHelper()
          self.helper.form_id = 'id_carreraForm'
          self.helper.form_method = 'post'
@@ -25,7 +26,7 @@ class carreraForm(forms.ModelForm):
                  "<br>"
                  "<div class='text-center'>"
                  "<div class='btn-group'>"
-                 "<a href='{% url 'sello:inicio' %}' class='btn btn-lg btn-dark'>"
+                 "<a href='{% url 'inicio' %}' class='btn btn-lg btn-dark'>"
                  "<i class='fa fa-arrow-left'></i> "
                  "Volver</a>"
                  "<button type='submit' class='btn btn-lg btn-primary'>"
@@ -35,7 +36,11 @@ class carreraForm(forms.ModelForm):
                  "</div>"
              )
          )
+
 class estudianteForm(forms.ModelForm):
+    rut = CLRutField()
+
+
     class Meta:
         model = models.estudiante
         fields = [
@@ -43,13 +48,14 @@ class estudianteForm(forms.ModelForm):
             'apellidoParterno',
             'apellidoMaterno',
             'nombres',
-            'fechaNaciemiento',
+            'fechaNacimiento',
             'genero',
             'carrera'
         ]
 
+
         def __init_(self,*args,**kwargs ):
-         super(carreraForm, self).__init__(*args,**kwargs)
+         super(estudianteForm, self).__init__(*args, **kwargs)
          self.helper = FormHelper()
          self.helper.form_id = 'id_estudianteForm'
          self.helper.form_method = 'post'
@@ -62,18 +68,19 @@ class estudianteForm(forms.ModelForm):
              'Fecha de Nacimiento',
              'genero',
              'carrera',
-             HTML(
-                 "<br>"
+
+        HTML(
+                 '<br>'
                  "<div class='text-center'>"
                  "<div class='btn-group'>"
-                 "<a href='{% url 'sello:inicio' %}' class='btn btn-lg btn-dark'>"
+                 "<a href='{% url 'inicio' %}' class='btn btn-lg btn-dark'>"
                  "<i class='fa fa-arrow-left'></i> "
-                 "Volver</a>"
+                 'Volver</a>'
                  "<button type='submit' class='btn btn-lg btn-primary'>"
-                 "<i class='fa fa-save'></i> "
-                 "Guardar </button>"
-                 "</div>"
-                 "</div>"
+                 "<i class='fa fa-save'></i>"
+                 'Guardar </button>'
+                 '</div>'
+                 '</div>'
              )
          )
 class encargadoForm(forms.ModelForm):
@@ -86,7 +93,7 @@ class encargadoForm(forms.ModelForm):
         ]
 
         def __init_(self,*args,**kwargs ):
-         super(carreraForm, self).__init__(*args,**kwargs)
+         super(encargadoForm, self).__init__(*args, **kwargs)
          self.helper = FormHelper()
          self.helper.form_id = 'id_encargadoForm'
          self.helper.form_method = 'post'
@@ -109,7 +116,7 @@ class encargadoForm(forms.ModelForm):
              )
          )
 
-class selloForm(forms.ModelForm):
+class cursoForm(forms.ModelForm):
     class Meta:
         model = models.curso
         fields = [
@@ -119,10 +126,10 @@ class selloForm(forms.ModelForm):
             'encargado'
         ]
 
-        def __init_(self,*args,**kwargs ):
-         super(carreraForm, self).__init__(*args,**kwargs)
+        def __init_(self, *args, **kwargs ):
+         super(cursoForm, self).__init__(*args, **kwargs)
          self.helper = FormHelper()
-         self.helper.form_id = 'id_selloForm'
+         self.helper.form_id = 'id_cursoForm'
          self.helper.form_method = 'post'
          self.helper.form_action = '.'
          self.helper.layout = Layout(
@@ -143,56 +150,18 @@ class selloForm(forms.ModelForm):
                  "Guardar </button>"
                  "</div>"
                  "</div>"
-             )
+             ),
          )
 
 
-class selloForm(forms.ModelForm):
-    class Meta:
-        model = models.curso
-        fields = [
-            'nombre',
-            'horas',
-            'encargado'
-        ]
 
-        def __init_(self, *args, **kwargs):
-            super(carreraForm, self).__init__(*args, **kwargs)
-            self.helper = FormHelper()
-            self.helper.form_id = 'id_selloForm'
-            self.helper.form_method = 'post'
-            self.helper.form_action = '.'
-            self.helper.layout = Layout(
-                'codigo',
-                'nombre',
-                'horas',
-                'encargado',
-
-                HTML(
-                    "<br>"
-                    "<div class='text-center'>"
-                    "<div class='btn-group'>"
-                    "<a href='{% url 'sello:inicio' %}' class='btn btn-lg btn-dark'>"
-                    "<i class='fa fa-arrow-left'></i> "
-                    "Volver</a>"
-                    "<button type='submit' class='btn btn-lg btn-primary'>"
-                    "<i class='fa fa-save'></i> "
-                    "Guardar </button>"
-                    "</div>"
-                    "</div>"
-                )
-            )
 class matriculaForm(forms.ModelForm):
     class Meta:
-        model = models.curso
-        fields = [
-            'nombre',
-            'estudiante',
-            'curso',
-        ]
+        model = models.matricula
+        fields = ('__all__')
 
         def __init_(self, *args, **kwargs):
-            super(carreraForm, self).__init__(*args, **kwargs)
+            super(matriculaForm, self).__init__(*args, **kwargs)
             self.helper = FormHelper()
             self.helper.form_id = 'id_selloForm'
             self.helper.form_method = 'post'
@@ -202,12 +171,14 @@ class matriculaForm(forms.ModelForm):
                 'nombre',
                 'horas',
                 'encargado',
+                'alumno',
+                'curso',
 
                 HTML(
                     "<br>"
                     "<div class='text-center'>"
                     "<div class='btn-group'>"
-                    "<a href='{% url 'sello:inicio' %}' class='btn btn-lg btn-dark'>"
+                    "<a href='{% url 'directorio:inicio' %}' class='btn btn-lg btn-dark'>"
                     "<i class='fa fa-arrow-left'></i> "
                     "Volver</a>"
                     "<button type='submit' class='btn btn-lg btn-primary'>"

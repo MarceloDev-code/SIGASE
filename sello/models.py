@@ -17,11 +17,12 @@ class Carrera(models.Model):
 #Clase Estudiante contiene rut, nombres, fecha de naciemiento, sexo y carrera, asi como la vigencia del perfil
 
 class estudiante(models.Model):
-    rut = models.CharField(max_length=9,primary_key=True)
+    id_estudiante = models.AutoField(primary_key=True)
+    rut = models.CharField(max_length=20)
     apellidoParterno = models.CharField(max_length=35)
     apellidoMaterno = models.CharField(max_length=35)
     nombres = models.CharField(max_length=35)
-    fechaNaciemiento = models.DateField()
+    fechaNacimiento = models.DateField()
     sexos = [
         ('F','FEMENINO'),
         ('M','MASCULINO'),
@@ -50,7 +51,7 @@ class estudiante(models.Model):
 #Clase encargado con rut y nombre
 
 class encargado(models.Model):
-    rut= models.CharField(max_length=9,primary_key=True,null=False,blank=False)
+    rut= models.CharField(max_length=20)
     nombre = models.CharField(max_length=100)
 
 #Clase curso con campos codigo, nombre, horas y encargado

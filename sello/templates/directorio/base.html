@@ -1,4 +1,4 @@
-{% load staticfiles %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../../../../favicon.ico">
 
-    <title> {% block titulo_pagina %} Reservas{% endblock %} </title>
+    <title> {% block titulo_pagina %}{% endblock %} </title>
 
     <!-- Bootstrap core CSS -->
     <link href="{% static 'directorio/css/bootstrap.min.css' %}" rel="stylesheet">

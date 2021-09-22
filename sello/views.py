@@ -1,8 +1,5 @@
-from django.shortcuts import render
-
-# Create your views here.
 from __future__ import unicode_literals
-
+from django.shortcuts import render
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -16,7 +13,6 @@ from rest_framework.permissions import AllowAny
 from sello.models import *
 from sello.forms import *
 from sello.serializers import *
-
 
 @login_required
 def inicio(request):
@@ -37,7 +33,7 @@ def inicio(request):
 
 ### CRUD ALUMNOS
 @login_required
-def estudiante(request):
+def estudiantes(request):
 
    #listado de estudiante
    
@@ -66,11 +62,11 @@ def estudiante(request):
         # If page is out of range (e.g. 9999), deliver last page of results.
         d_list = paginator.page(paginator.num_pages)
 
-    ctx['estudiante'] = d_list
+    ctx['estudiantes'] = d_list
 
     return render(
         request,
-        'directorio/estudiante/estudiante.html',
+        'directorio/estudiantes/estudiante.html',
         ctx
     )
 
@@ -86,12 +82,12 @@ def mostrar_estudiante(request, id_estudiante):
     """
 
     ctx = {}
-    estudiante = estudiante.objects.get(id=id_estudiante)
+    estudiante = models.estudiante.objects.get(id=id_estudiante)
     ctx['estudiante'] = estudiante
 
     return render(
         request,
-        'directorio/estudiante/mostrar_estudiante.html',
+        'directorio/estudiantes/mostrar_estudiante.html',
         ctx
 
     )
@@ -113,12 +109,12 @@ def crear_estudiante(request):
             obj = form.save()
             messages.success(
                 request,
-                u"Persona <strong>{}</strong> creada satisfactoriamente...".format(
+                u"Estudiante <strong>{}</strong> creado satisfactoriamente...".format(
                     obj.nombre_completo()
                 )
             )
             return redirect(
-                'reserva:estudiante'
+                'estudiante'
             )
 
     else:
@@ -128,13 +124,13 @@ def crear_estudiante(request):
 
     return render(
         request,
-        'directorio/estudiante/crear_estudiante.html',
+        'directorio/estudiantes/crear_estudiante.html',
         ctx
     )
 
 
 @login_required
-def editar_estudiante(request, rut_estudiante):
+def editar_estudiante(request, id_estudiante):
     """
      Función para actualizar una estudiante por su id
 
@@ -143,9 +139,10 @@ def editar_estudiante(request, rut_estudiante):
     :return: Html
     """
     ctx = {}
-    estudiante = get_object_or_404(
-        id=rut_estudiante,
-        estudiante
+    estudiantes = get_object_or_404(
+        estudiante,
+        id=id_estudiante
+
     )
 
     if request.method == "POST":
@@ -159,7 +156,7 @@ def editar_estudiante(request, rut_estudiante):
                 )
             )
             return redirect(
-                'reserva:estudiante'
+                'estudiantes:estudiante'
             )
     else:
         form = estudianteForm(instance=estudiante)
@@ -184,26 +181,27 @@ def eliminar_estudiante(request, id_estudiante):
     :return:
     """
     ctx = {}
-    ninja = estudiante.objects
-    estudiante = get_object_or_404(
+
+    estudiantes = get_object_or_404(
         estudiante,
         pk=id_estudiante
     )
+
     if request.method == "POST":
-        nombre = estudiante.nombre_completo()
+        nombre = estudiante.nombreCompleto()
 
         messages.error(
             request,
-            u"el profesor <strong>{}</strong> ha sido eliminada satisfactoriamente...".format(
+            u"el estudiante <strong>{}</strong> ha sido eliminada satisfactoriamente...".format(
                 nombre
             )
         )
         estudiante.delete()
         return redirect(
-            'reserva:estudiante'
+            'estudiante'
         )
 
-    ctx['profesor'] = estudiante
+    ctx['estudiante'] = estudiante
 
     return render(
         request,
@@ -211,30 +209,27 @@ def eliminar_estudiante(request, id_estudiante):
         ctx
     )
 
-
-
-### CRUD asignatura ##
-
+### CRUD actividad ##
 @login_required
-def asignaturas(request):
+def actividades(request):
     """
-     Listado de estudiante
+     Listado de actividades sello
 
 
     :param request: Django request
     :return: Html
     """
     ctx = {}
-    listado_estudiante = asignatura.objects.all()
+    listado_actividades = curso.objects.all()
     filtro = request.GET.get('filtro', None)
     if filtro:
-        listado_estudiante = listado_estudiante.filter(
-            Q(idAsignatura__icontains=filtro) |
-            Q(nombreAsignatura__icontains=filtro) |
-            Q(facultad__icontains=filtro)
+        listado_adctividades = listado_actividades.filter(
+            Q(codigo__icontains=filtro) |
+            Q(nombre__icontains=filtro) |
+            Q(encargado__icontains=filtro)
         )
 
-    paginator = Paginator(listado_estudiante, 10)
+    paginator = Paginator(listado_actividades, 10)
 
     page = request.GET.get('page')
     try:
@@ -246,16 +241,16 @@ def asignaturas(request):
         # If page is out of range (e.g. 9999), deliver last page of results.
         d_list = paginator.page(paginator.num_pages)
 
-    ctx['asignatura'] = d_list
+    ctx['curso'] = d_list
 
     return render(
         request,
-        'directorio/estudiante/asignaturas.html',
+        'directorio/actividad/actividades.html',
         ctx
     )
 
 @login_required
-def crear_asignatura(request):
+def crear_actividad(request):
     """
      Crea un nuevo registro de directorio asociado al modelo
      directorio
@@ -266,36 +261,31 @@ def crear_asignatura(request):
     ctx = {}
 
     if request.method == "POST":
-        form = AsignaturaForm(request.POST)
+        form = cursoForm(request.POST)
         if form.is_valid():
             obj = form.save()
-            messages.success(
-                request,
-                u"asignatura creada satisfactoriamente..."
-                )
-
 
             return redirect(
-                'reserva:inicio'
+                'inicio'
             )
 
     else:
-        form = AsignaturaForm()
+        form = cursoForm
 
     ctx['form'] = form
 
     return render(
         request,
-        'directorio/asignatura/crear_asignatura.html',
+        'directorio/actividad/crear_actividad.html',
         ctx
     )
 
 
 
 @login_required
-def eliminar_asignatura(request, id_asignatura):
+def eliminar_actividad(request, id_actividad):
     """
-    Elimina un registro de departamento de la base de datos
+    Elimina una actividad
 
     :param request: Django request
     :param id_departamento: ID modelo Departamento
@@ -303,183 +293,35 @@ def eliminar_asignatura(request, id_asignatura):
     """
     ctx = {}
 
-    directorio = get_object_or_404(
-        asignatura,
-        pk=id_asignatura
+    actividades = get_object_or_404(
+        pk=id_actividad
     )
     if request.method == "POST":
-        id_asignatura = asignatura.idAsignatura
-        asignatura.delete()
-        messages.error(
-            request,
-            u"El directorio <strong>{}</strong> ha sido eliminado satisfactoriamente...".format(
-                id_asignatura
-            )
-        )
-
-        return redirect(
-            'reserva:inicio'
-        )
-
-    ctx['asignatura'] = asignatura
-
-    return render(
-        request,
-        'directorio/asignatura/eliminar_asignatura.html',
-        ctx
-    )
-
-
-@login_required
-def editar_asignatura(request, id_asignatura):
-    """
-     Función para actualizar una directorio por su id
-
-    :param request: Django request
-    :param id_directorio: ID modelo directorio
-    :return: Html
-    """
-    ctx = {}
-    directorio = get_object_or_404(
-        asignatura,
-        id=id_asignatura
-    )
-
-    if request.method == "POST":
-        form = AsignaturaForm(request.POST, instance=asignatura)
-        if form.is_valid():
-            obj = form.save()
-
-            return redirect(
-                'reserva:inicio',
-                obj.id
-            )
-    else:
-        form = AsignaturaForm(instance=asignatura)
-
-    ctx['asignatura'] = asignatura
-    ctx['form'] = form
-
-    return render(
-        request,
-        'directorio/asignatura/editar_asignatura.html',
-        ctx
-    )
-
-### CRUD modulos ##
-@login_required
-def modulos(request):
-    """
-     Listado de estudiante
-
-
-    :param request: Django request
-    :return: Html
-    """
-    ctx = {}
-    listado_estudiante = Modulos.objects.all()
-    filtro = request.GET.get('filtro', None)
-    if filtro:
-        listado_estudiante = listado_estudiante.filter(
-            Q(idmodulo__icontains=filtro) |
-            Q(idSala__icontains=filtro) |
-            Q(capacidad__icontains=filtro)
-        )
-
-    paginator = Paginator(listado_estudiante, 10)
-
-    page = request.GET.get('page')
-    try:
-        d_list = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        d_list = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        d_list = paginator.page(paginator.num_pages)
-
-    ctx['Modulos'] = d_list
-
-    return render(
-        request,
-        'directorio/modulos/modulos.html',
-        ctx
-    )
-
-@login_required
-def crear_modulo(request):
-    """
-     Crea un nuevo registro de directorio asociado al modelo
-     directorio
-
-    :param request: Django request
-    :return: Html
-    """
-    ctx = {}
-
-    if request.method == "POST":
-        form = ModulosForm(request.POST)
-        if form.is_valid():
-            obj = form.save()
-
-            return redirect(
-                'reserva:inicio'
-            )
-
-    else:
-        form = ModulosForm()
-
-    ctx['form'] = form
-
-    return render(
-        request,
-        'directorio/modulos/crear_modulos.html',
-        ctx
-    )
-
-
-
-@login_required
-def eliminar_modulos(request, id_modulo):
-    """
-    Elimina un registro de departamento de la base de datos
-
-    :param request: Django request
-    :param id_departamento: ID modelo Departamento
-    :return:
-    """
-    ctx = {}
-
-    modulo = get_object_or_404(
-        Modulos,
-        pk=id_modulo
-    )
-    if request.method == "POST":
-        id_modulo = Modulos.idmodulo
+        id_actividad = actividades.codigo
 
         messages.error(
             request,
-            u"La reserva <strong>{}</strong> ha sido eliminado satisfactoriamente...".format(
-                id_modulo
+            u"La actividad <strong>{}</strong> ha sido eliminado satisfactoriamente...".format(
+                id_actividad
             )
         )
-        modulo.delete()
+        curso.delete()
         return redirect(
-            'reserva:modulos'
+            'actividad:actividades'
         )
 
-    ctx['Modulos'] = modulo
+    ctx['curso'] = curso
 
     return render(
         request,
-        'directorio/modulos/eliminar_modulos.html',
+        'directorio/actividad/eliminar_actividad.html',
         ctx
     )
 
 
 
 @login_required
-def editar_modulos(request, id_modulo):
+def editar_actividad(request, id_actividad):
     """
      Función para actualizar una directorio por su id
 
@@ -489,381 +331,34 @@ def editar_modulos(request, id_modulo):
     """
     ctx = {}
     modulo = get_object_or_404(
-        Modulos,
-       id=id_modulo
+        curso,
+       id=id_actividad
     )
 
     if request.method == "POST":
-        form = ModulosForm(request.POST, instance=modulo)
+        form = cursoForm(request.POST, instance=curso)
         if form.is_valid():
             obj = form.save()
             messages.success(
                 request,
-                u"modulo actualizada satisfactoriamente..."
+                u"actividad actualizada satisfactoriamente..."
                 )
 
             return redirect(
-                    'reserva:modulos'
+                    'sello:actividades'
             )
     else:
-        form = ModulosForm(instance=modulo)
+        form = cursoForm(instance=curso)
 
-    ctx['Modulos'] = modulo
+    ctx['curso'] = curso
     ctx['form'] = form
 
     return render(
         request,
-        'directorio/reserva/editar_reservas.html',
+        'directorio/actividad/editar_actividad.html',
         ctx
     )
 
-### CRUD salas ##
-
-
-
-
-@login_required
-def eliminar_asignatura(request, id_sala):
-    """
-    Elimina un registro de departamento de la base de datos
-
-    :param request: Django request
-    :param id_departamento: ID modelo Departamento
-    :return:
-    """
-    ctx = {}
-
-    directorio = get_object_or_404(
-        Sala,
-        pk=id_sala
-    )
-    if request.method == "POST":
-        id_sala = Sala.idSala
-        asignatura.delete()
-        messages.error(
-            request,
-            u"El directorio <strong>{}</strong> ha sido eliminado satisfactoriamente...".format(
-                id_sala
-            )
-        )
-
-        return redirect(
-            'reserva:inicio'
-        )
-
-    ctx['Sala'] = Sala
-
-    return render(
-        request,
-        'directorio/asignatura/eliminar_sala.html',
-        ctx
-    )
-
-
-@login_required
-def editar_sala(request, id_sala):
-    """
-     Función para actualizar una directorio por su id
-
-    :param request: Django request
-    :param id_directorio: ID modelo directorio
-    :return: Html
-    """
-    ctx = {}
-    sala = get_object_or_404(
-        Sala,
-       id=id_sala
-    )
-
-    if request.method == "POST":
-        form = SalaForm(request.POST, instance=sala)
-        if form.is_valid():
-            obj = form.save()
-            messages.success(
-                request,
-                u"sala actualizada satisfactoriamente..."
-                )
-
-            return redirect(
-                    'reserva:salas'
-            )
-    else:
-        form = SalaForm(instance=sala)
-
-    ctx['Sala'] = sala
-    ctx['form'] = form
-
-    return render(
-        request,
-        'directorio/Salas/editar_sala.html',
-        ctx
-    )
-
-### CRUD salas ##
-
-@login_required
-def salas(request):
-    """
-     Listado de estudiante
-
-
-    :param request: Django request
-    :return: Html
-    """
-    ctx = {}
-    listado_estudiante = Sala.objects.all()
-    filtro = request.GET.get('filtro', None)
-    if filtro:
-        listado_estudiante = listado_estudiante.filter(
-            Q(idAsignatura__icontains=filtro) |
-            Q(nombreAsignatura__icontains=filtro) |
-            Q(facultad__icontains=filtro)
-        )
-
-    paginator = Paginator(listado_estudiante, 10)
-
-    page = request.GET.get('page')
-    try:
-        d_list = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        d_list = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        d_list = paginator.page(paginator.num_pages)
-
-    ctx['Sala'] = d_list
-
-    return render(
-        request,
-        'directorio/Salas/salas.html',
-        ctx
-    )
-
-
-@login_required
-def crear_sala(request):
-    """
-     Crea un nuevo registro de directorio asociado al modelo
-     directorio
-
-    :param request: Django request
-    :return: Html
-    """
-    ctx = {}
-
-    if request.method == "POST":
-        form = SalaForm(request.POST)
-        if form.is_valid():
-            obj = form.save()
-
-            return redirect(
-                'reserva:inicio'
-            )
-
-    else:
-        form = SalaForm()
-
-    ctx['form'] = form
-
-    return render(
-        request,
-        'directorio/Salas/crear_sala.html',
-        ctx
-    )
-
-
-
-@login_required
-def eliminar_sala(request, id_sala):
-    """
-    Elimina un registro de departamento de la base de datos
-
-    :param request: Django request
-    :param id_departamento: ID modelo Departamento
-    :return:
-    """
-    ctx = {}
-
-    sala = get_object_or_404(
-        Sala,
-        pk=id_sala
-    )
-    if request.method == "POST":
-        sala1 = Sala.idSala
-
-        messages.error(
-            request,
-            u"El directorio <strong>{}</strong> ha sido eliminado satisfactoriamente...".format(
-                sala1
-            )
-        )
-        sala.delete()
-        return redirect(
-            'reserva:inicio'
-        )
-
-    ctx['Sala'] = sala
-
-    return render(
-        request,
-        'directorio/Salas/eliminar_sala.html',
-        ctx
-    )
-
-
-### CRUD reserva ##
-
-@login_required
-def reservas(request):
-    """
-     Listado de estudiante
-
-
-    :param request: Django request
-    :return: Html
-    """
-    ctx = {}
-    listado_estudiante = Reserva.objects.all()
-    filtro = request.GET.get('filtro', None)
-    if filtro:
-        listado_estudiante = listado_estudiante.filter(
-            Q(id_Clase__icontains=filtro) |
-            Q(id_Modulo__icontains=filtro) |
-            Q(id_reserva__iconstains=filtro) |
-            Q(start_date__icontains=filtro)
-        )
-
-    paginator = Paginator(listado_estudiante, 10)
-
-    page = request.GET.get('page')
-    try:
-        d_list = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        d_list = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        d_list = paginator.page(paginator.num_pages)
-
-    ctx['Reserva'] = d_list
-
-    return render(
-        request,
-        'directorio/reserva/reservas.html',
-        ctx
-    )
-
-@login_required
-def crear_reserva(request):
-    """
-     Crea un nuevo registro de directorio asociado al modelo
-     directorio
-
-    :param request: Django request
-    :return: Html
-    """
-    ctx = {}
-
-    if request.method == "POST":
-        form = ReservaForm(request.POST)
-        if form.is_valid():
-            obj = form.save()
-
-            return redirect(
-                'reserva:inicio'
-            )
-
-    else:
-        form = ReservaForm()
-
-    ctx['form'] = form
-
-    return render(
-        request,
-        'directorio/reserva/crear_reserva.html',
-        ctx
-    )
-
-
-
-
-@login_required
-def eliminar_reserva(request, id_reserva):
-    """
-    Elimina un registro de departamento de la base de datos
-
-    :param request: Django request
-    :param id_departamento: ID modelo Departamento
-    :return:
-    """
-    ctx = {}
-
-    reserva = get_object_or_404(
-        Reserva,
-        pk=id_reserva
-    )
-    if request.method == "POST":
-        id_reserva = Reserva.id_reserva
-
-        messages.error(
-            request,
-            u"La reserva <strong>{}</strong> ha sido eliminado satisfactoriamente...".format(
-                id_reserva
-            )
-        )
-        reserva.delete()
-        return redirect(
-            'reserva:inicio'
-        )
-
-    ctx['Reserva'] = Reserva
-
-    return render(
-        request,
-        'directorio/reserva/eliminar_reserva.html',
-        ctx
-    )
-
-
-@login_required
-def editar_reserva(request, id_reserva):
-    """
-     Función para actualizar una directorio por su id
-
-    :param request: Django request
-    :param id_directorio: ID modelo directorio
-    :return: Html
-    """
-    ctx = {}
-    reserva = get_object_or_404(
-        Reserva,
-       id=id_reserva
-    )
-
-    if request.method == "POST":
-        form = ReservaForm(request.POST, instance=reserva)
-        if form.is_valid():
-            obj = form.save()
-            messages.success(
-                request,
-                u"reserva actualizada satisfactoriamente..."
-                )
-
-            return redirect(
-                    'reserva:reservas'
-            )
-    else:
-        form = ReservaForm(instance=reserva)
-
-    ctx['Reserva'] = reserva
-    ctx['form'] = form
-
-    return render(
-        request,
-        'directorio/reserva/editar_reservas.html',
-        ctx
-    )
 # LOGIN VIEWS
 def iniciar_sesion(request):
     """
@@ -874,7 +369,7 @@ def iniciar_sesion(request):
     """
 
     if request.method == "POST":
-        print request.POST
+        print(request.POST)
         # viene un formulario
         username = request.POST['username']
         password = request.POST['password']
@@ -885,7 +380,7 @@ def iniciar_sesion(request):
 
                 login(request, user)
                 return redirect(
-                    'reserva:inicio'
+                    'directorio:inicio'
                 )
             else:
                 messages.add_message(
@@ -927,51 +422,20 @@ def cerrar_sesion(request):
 
 # APIS
 
-class PersonaViewSet(viewsets.ModelViewSet):
+# class PersonaViewSet(viewsets.ModelViewSet):
     http_method_names = ('get',)
-    queryset = estudiante.objects.order_by('apellidos')
+    queryset = estudiante
     serializer_class = estudianteSerializer
     filter_backends = (filters.SearchFilter, )
     # filter_fields = ('activo',)
     search_fields = ('nombres', 'apellidos', 'rut_sin_formato')
 
 
-class ModuloViewSet(viewsets.ModelViewSet):
+class actividadesViewSet(viewsets.ModelViewSet):
     http_method_names = ('get',)
-    queryset = Modulos.objects.order_by('idSala')
-    serializer_class = ModulosSerializer
+    queryset = curso.objects.order_by('codigo')
+    serializer_class = cursoSerializer
     filter_backends = (filters.SearchFilter, )
-    search_fields = ('idmodulo', 'isala', 'capacidad')
+    search_fields = ('codigo', 'nombre', 'horas')
 
 
-class asignaturaViewSet(viewsets.ModelViewSet):
-    http_method_names = ('get',)
-    queryset = asignatura.objects.order_by('nombreAsignatura')
-    serializer_class = AsignaturaSerializer
-    filter_backends = (filters.SearchFilter, )
-    search_fields = ('idAsignatura', 'nombreAsignatura', 'facultad')
-
-
-class salaViewSet(viewsets.ModelViewSet):
-    http_method_names = ('get',)
-    queryset = Sala.objects.order_by('idSala')
-    serializer_class = SalaSerializer
-    filter_backends = (filters.SearchFilter, )
-    search_fields = ('idSala', 'nombre', 'capacidad')
-
-
-class reservaViewSet(viewsets.ModelViewSet):
-        http_method_names = ('get',)
-        queryset = Reserva.objects.order_by('id1')
-        serializer_class = ReservaSerializer
-        filter_backends = (filters.SearchFilter,)
-        search_fields = ('idreserva','id1', 'idasignatura','idModulos')
-
-
-class UserViewSet(viewsets.ModelViewSet):
-    permission_classes = (AllowAny,)
-    http_method_names = ('get', )
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    filter_backends = (DjangoFilterBackend, )
-    filter_fields = ('username',)
