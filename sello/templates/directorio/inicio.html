@@ -2,20 +2,20 @@
 
 {% block contenido %}
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-10">
             <div class="card border-success">
                 <div class="card-header bg-success" >
                     <a href="{% url 'crear_estudiante' %}"
                        class="btn btn-outline-dark pull-right">
                         <i class="fa fa-plus"></i> Nuevo</a>
                     <h3 class="card-title text-dark">
-                        <i class="fa fa-users" ></i> estudiante </h3>
+                        <i class="fa fa-users" ></i> estudiantes </h3>
                 </div>
                 <div class="card-body ">
                     <div class="list-group">
                         <a href="{% url 'estudiantes' %}"
                            class="list-group-item list-group-item-action">
-                            Listado de estudiante
+                            Listado de estudiantes
                             <span class="badge badge-secondary pull-right">{{ total_estudiantes }}</span> </a>
                     </div>
                 </div>
@@ -23,7 +23,7 @@
             <br>
         </div>
 
-    <div class="col-md-6">
+    <div class="col-md-10">
             <div class="card border-success">
                 <div class="card-header bg-success" >
                     <a href="{% url 'crear_actividad' %}"

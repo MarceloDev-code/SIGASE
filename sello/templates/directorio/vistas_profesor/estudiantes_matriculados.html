@@ -1,0 +1,38 @@
+{% extends 'directorio/base.html' %}
+{% block contenido %}
+
+      <div class="card border-secondary ">  <!-- Directorios relacionados -->
+        <div class="card-header"> <h3> {{curso.nombre }} <small> Participantes de la Actividad</small></h3></div>
+          <div class="card-body">
+          <table class="table">
+            <thead>
+            <tr>
+                <th>Nombres</th>
+                <th>Carrera </th>
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for matriculados in verCurso %}
+                <tr>
+
+                    <td>{{ matriculados.estudiante.nombreCompleto}}</td>
+                    <td>{{ matriculados.estudiante.carrera}}</td>
+                    <td>{{ matriculados.curso }}</td>
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+          </div>
+
+
+    </div>
+    <br>
+                <div class='text-center'>
+
+                <a href='{% url 'inicio' %}' class='btn-lg btn-primary '>
+                <i class='fa fa-arrow-left'></i> Volver</a>
+                </div>
+     <br>
+{% endblock %}

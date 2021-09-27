@@ -36,13 +36,14 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'crispy_forms',
-    'sello',
+    'colorfield',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'sello',
     'django.contrib.humanize'
 ]
 
@@ -90,6 +91,7 @@ DATABASES = {
 }
 LOGIN_URL = '/login/'
 
+AUTH_USER_MODEL = 'sello.estudiante'
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

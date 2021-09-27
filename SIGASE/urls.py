@@ -70,4 +70,16 @@ urlpatterns = [
         views.crear_actividad,
         name='crear_actividad'
     ),
+
+url(
+        r'^actividad/matricula/$',
+        views.matricula,
+        name='matricula'
+    ),
+url(
+        r'^matriculados/(?P',
+        views.verAlumnosMatriculados,
+        name='matriculados'
+    ),
+
 ]

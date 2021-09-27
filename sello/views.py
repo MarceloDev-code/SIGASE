@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
+from crispy_forms.utils import render_crispy_form
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, filters
 from rest_framework.permissions import AllowAny
@@ -43,11 +44,7 @@ def estudiantes(request):
     if filtro:
         listado_estudiante = listado_estudiante.filter(
             Q(nombres__icontains=filtro) |
-            Q(apellidoPaterno__icontains=filtro) |
-            Q(ApellidoMaterno__icontains=filtro) |
-            Q(apellidos__icontains=filtro) |
-            Q(rut__icontains=filtro) |
-            Q(rut_sin_formato__icontains=filtro)
+            Q(rut__icontains=filtro)
         )
 
     paginator = Paginator(listado_estudiante, 10)
@@ -77,13 +74,15 @@ def mostrar_estudiante(request, id_estudiante):
      Mostrar detalle de estudiante
 
     :param request: Django request
-    :param id_estudiante: ID de modelo Persona
+    :param id_estudiante: ID de modelo estudiante
     :return: Html
     """
 
     ctx = {}
-    estudiante = models.estudiante.objects.get(id=id_estudiante)
-    ctx['estudiante'] = estudiante
+    estudiantes = estudiante.objects.get(
+        estudiante,
+        rut=id_estudiante)
+    ctx['estudiantes'] = estudiantes
 
     return render(
         request,
@@ -140,13 +139,12 @@ def editar_estudiante(request, id_estudiante):
     """
     ctx = {}
     estudiantes = get_object_or_404(
-        estudiante,
-        id=id_estudiante
+        estudiante, id=id_estudiante
 
     )
 
     if request.method == "POST":
-        form = estudianteForm(request.POST, instance=estudiante)
+        form = estudianteForm(request.POST, instance=estudiantes)
         if form.is_valid():
             obj = form.save()
             messages.success(
@@ -156,12 +154,12 @@ def editar_estudiante(request, id_estudiante):
                 )
             )
             return redirect(
-                'estudiantes:estudiante'
+                'estudiante'
             )
     else:
-        form = estudianteForm(instance=estudiante)
+        form = estudianteForm(instance=estudiantes)
 
-    ctx['estudiante'] = estudiante
+    ctx['estudiante'] = estudiantes
     ctx['form'] = form
 
     return render(
@@ -359,6 +357,58 @@ def editar_actividad(request, id_actividad):
         ctx
     )
 
+@login_required
+def matricula(request):
+        """
+         Crea un nuevo registro de matricula asociado al modelo
+         matricula
+
+        :param request: Django request
+        :return: Html
+        """
+        ctx = {}
+
+        if request.method == "POST":
+            form = matriculaForm(request.POST)
+            if form.is_valid():
+                obj = form.save()
+                messages.success(
+                    request,
+                    u"Registrado satisfactoriamente..."
+                )
+                return redirect(
+                    'actividades'
+                )
+
+        else:
+            form = matriculaForm()
+
+        ctx['form'] = form
+
+        return render(
+            request,
+            'directorio/actividad/matricula.html',
+            ctx
+        )
+
+#Funcion para ver alumnos matriculados en un curso
+def verAlumnosMatriculados(request, id_curso):
+
+    ctx = {}
+    matriculados = curso.objects.get(
+        matricula,
+        id=id_curso)
+    ctx['matriculados'] = matriculados
+    ctx['verCurso'] = matriculados.objects.filter(matriculados=matricula).order_by('id')
+
+    return render(
+        request,
+        'directorio/vistas_profesor/estudiantes_matriculados.html',
+        ctx
+
+    )
+
+
 # LOGIN VIEWS
 def iniciar_sesion(request):
     """
@@ -371,7 +421,7 @@ def iniciar_sesion(request):
     if request.method == "POST":
         print(request.POST)
         # viene un formulario
-        username = request.POST['username']
+        username = request.POST['rut']
         password = request.POST['password']
 
         user = authenticate(request, username=username, password=password)
@@ -407,6 +457,8 @@ def iniciar_sesion(request):
     )
 
 
+
+#LOGOUT
 @login_required
 def cerrar_sesion(request):
     """
@@ -420,15 +472,9 @@ def cerrar_sesion(request):
     )
 
 
-# APIS
 
-# class PersonaViewSet(viewsets.ModelViewSet):
-    http_method_names = ('get',)
-    queryset = estudiante
-    serializer_class = estudianteSerializer
-    filter_backends = (filters.SearchFilter, )
-    # filter_fields = ('activo',)
-    search_fields = ('nombres', 'apellidos', 'rut_sin_formato')
+    # APIS
+
 
 
 class actividadesViewSet(viewsets.ModelViewSet):
